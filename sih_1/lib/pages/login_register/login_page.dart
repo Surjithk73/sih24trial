@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:sih_1/components/my_button.dart';
 import 'package:sih_1/components/my_textfield.dart';
 import 'package:sih_1/pages/home_page.dart';
+import 'package:sih_1/pages/login_register/forget_password.dart';
 import 'package:sih_1/pages/login_register/register_page.dart';
 import 'models/auth_provider.dart';
 
@@ -71,9 +72,9 @@ class _LoginPageState extends State<LoginPage> {
                         
                   //forgot password
                   GestureDetector(
-                    // onTap: () => Navigator.push(context, MaterialPageRoute(
-                    //   builder: (context) => const ForgotPasswordPage(),
-                    // )),
+                    onTap: () => Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => ForgotPassword(),
+                    )),
                     child: const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 30),
                       child: Row(

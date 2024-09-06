@@ -4,28 +4,31 @@ import 'package:sih_1/offline_database/contact_database.dart';
 
 class ContactProvider with ChangeNotifier {
   List<Contact> _contacts = [];
+  final DatabaseHelper _dbHelper = DatabaseHelper();
 
   List<Contact> get contacts => _contacts;
 
-  Future<void> fetchContacts() async {
-    final contacts = await DatabaseHelper.instance.getContacts();
-    _contacts = contacts;
-    notifyListeners();
+  ContactProvider() {
+    fetchContacts(); // Fetch contacts on initialization
   }
 
-  Future<void> addContact(String name, String phoneNumber) async {
-    final newContact = Contact(name: name, phoneNumber: phoneNumber);
-    await DatabaseHelper.instance.insertContact(newContact);
+  Future<void> fetchContacts() async {
+    _contacts = await _dbHelper.getContacts();
+    notifyListeners(); // Notify listeners when contacts are fetched
+  }
+
+  Future<void> addContact(Contact contact) async {
+    await _dbHelper.addContact(contact);
     fetchContacts();
   }
 
   Future<void> updateContact(Contact contact) async {
-    await DatabaseHelper.instance.updateContact(contact);
+    await _dbHelper.updateContact(contact);
     fetchContacts();
   }
 
   Future<void> deleteContact(int id) async {
-    await DatabaseHelper.instance.deleteContact(id);
+    await _dbHelper.deleteContact(id);
     fetchContacts();
   }
 }

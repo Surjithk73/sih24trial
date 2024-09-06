@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:sih_1/components/contact_tile.dart';
 import 'package:sih_1/models/contact.dart';
-import 'package:sih_1/pages/contact/contact_provider.dart';
+import 'contact_provider.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class ContactPage extends StatelessWidget {
   @override
@@ -10,75 +12,83 @@ class ContactPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Contacts'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () => _showAddContactDialog(context),
-          ),
-        ],
       ),
       body: Consumer<ContactProvider>(
-        builder: (context, contactProvider, child) {
+        builder: (context, provider, child) {
           return ListView.builder(
-            itemCount: contactProvider.contacts.length,
+            itemCount: provider.contacts.length,
             itemBuilder: (context, index) {
-              final contact = contactProvider.contacts[index];
-              return ContactTile(
-                contactName: contact.name,
-                phoneNumber: contact.phoneNumber,
-                onEdit: () => _showEditContactDialog(context, contact),
-                onDelete: () => contactProvider.deleteContact(contact.id!),
+              final contact = provider.contacts[index];
+              return Slidable(
+                key: ValueKey(contact.id),
+                startActionPane: ActionPane(
+                  motion: StretchMotion(),
+                  children: [
+                    SlidableAction(
+                      onPressed: (context) => _callContact(context, contact.phoneNumber),
+                      backgroundColor: Colors.green,
+                      foregroundColor: Colors.white,
+                      icon: Icons.call,
+                      label: 'Call',
+                    ),
+                  ],
+                ),
+                endActionPane: ActionPane(
+                  motion: StretchMotion(),
+                  children: [
+                    SlidableAction(
+                      onPressed: (context) => _editContact(context, contact),
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                      icon: Icons.edit,
+                      label: 'Edit',
+                    ),
+                    SlidableAction(
+                      onPressed: (context) => _confirmDeleteContact(context, contact),
+                      backgroundColor: Colors.red,
+                      foregroundColor: Colors.white,
+                      icon: Icons.delete,
+                      label: 'Delete',
+                    ),
+                  ],
+                ),
+                child: ListTile(
+                  title: Text(contact.name),
+                  subtitle: Text(contact.phoneNumber),
+                ),
               );
             },
           );
         },
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _addContact(context),
+        child: Icon(Icons.add),
+      ),
     );
   }
 
-  void _showAddContactDialog(BuildContext context) {
-    String name = '';
-    String phoneNumber = '';
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Add Contact'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                decoration: InputDecoration(labelText: 'Name'),
-                onChanged: (value) => name = value,
-              ),
-              TextField(
-                decoration: InputDecoration(labelText: 'Phone Number'),
-                keyboardType: TextInputType.phone,
-                onChanged: (value) => phoneNumber = value,
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Provider.of<ContactProvider>(context, listen: false).addContact(name, phoneNumber);
-                Navigator.of(context).pop();
-              },
-              child: Text('Add'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('Cancel'),
-            ),
-          ],
-        );
-      },
-    );
+  Future<void> _callContact(BuildContext context, String phoneNumber) async {
+    final status = await Permission.phone.request();
+
+    if (status.isGranted) {
+      try {
+        await FlutterPhoneDirectCaller.callNumber(phoneNumber);
+      } catch (e) {
+        print("Failed to make call: $e");
+      }
+    } else if (status.isDenied) {
+      print("Permission denied");
+    } else if (status.isPermanentlyDenied) {
+      print("Permission permanently denied");
+      await openAppSettings();
+    }
   }
 
-  void _showEditContactDialog(BuildContext context, Contact contact) {
-    String name = contact.name;
-    String phoneNumber = contact.phoneNumber;
+  void _editContact(BuildContext context, Contact contact) {
+    final _nameController = TextEditingController(text: contact.name);
+    final _phoneController = TextEditingController(text: contact.phoneNumber);
+
     showDialog(
       context: context,
       builder: (context) {
@@ -88,31 +98,112 @@ class ContactPage extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
+                controller: _nameController,
                 decoration: InputDecoration(labelText: 'Name'),
-                controller: TextEditingController(text: name),
-                onChanged: (value) => name = value,
               ),
               TextField(
+                controller: _phoneController,
                 decoration: InputDecoration(labelText: 'Phone Number'),
                 keyboardType: TextInputType.phone,
-                controller: TextEditingController(text: phoneNumber),
-                onChanged: (value) => phoneNumber = value,
               ),
             ],
           ),
           actions: [
             TextButton(
               onPressed: () {
-                Provider.of<ContactProvider>(context, listen: false).updateContact(
-                  Contact(id: contact.id, name: name, phoneNumber: phoneNumber),
-                );
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(); // Close the dialog without doing anything
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                final name = _nameController.text.trim();
+                final phoneNumber = _phoneController.text.trim();
+
+                if (name.isNotEmpty && phoneNumber.isNotEmpty) {
+                  final updatedContact = Contact(id: contact.id, name: name, phoneNumber: phoneNumber);
+                  Provider.of<ContactProvider>(context, listen: false).updateContact(updatedContact);
+                  Navigator.of(context).pop(); // Close the dialog after updating the contact
+                } else {
+                  // You can show an error message here
+                }
               },
               child: Text('Save'),
             ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _confirmDeleteContact(BuildContext context, Contact contact) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Delete Contact'),
+        content: Text('Are you sure you want to delete ${contact.name}?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Provider.of<ContactProvider>(context, listen: false)
+                  .deleteContact(contact.id!);
+              Navigator.of(context).pop();
+            },
+            child: Text('Delete'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _addContact(BuildContext context) {
+    final _nameController = TextEditingController();
+    final _phoneController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Add New Contact'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _nameController,
+                decoration: InputDecoration(labelText: 'Name'),
+              ),
+              TextField(
+                controller: _phoneController,
+                decoration: InputDecoration(labelText: 'Phone Number'),
+                keyboardType: TextInputType.phone,
+              ),
+            ],
+          ),
+          actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog without doing anything
+              },
               child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                final name = _nameController.text.trim();
+                final phoneNumber = _phoneController.text.trim();
+
+                if (name.isNotEmpty && phoneNumber.isNotEmpty) {
+                  final newContact = Contact(name: name, phoneNumber: phoneNumber);
+                  Provider.of<ContactProvider>(context, listen: false).addContact(newContact);
+                  Navigator.of(context).pop(); // Close the dialog after adding the contact
+                } else {
+                  // You can show an error message here
+                }
+              },
+              child: Text('Add'),
             ),
           ],
         );

@@ -47,50 +47,53 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _pages[_selectedIndex], // Display the current page based on selected index
-      bottomNavigationBar: Container(
-        padding: EdgeInsets.all(10),
-        child: GNav(
-          selectedIndex: _selectedIndex, // Highlight the selected button
-          onTabChange: _onItemTapped, // Handle button tap
-          color: Theme.of(context).colorScheme.primary,
-          activeColor: Theme.of(context).colorScheme.inversePrimary,
-          tabActiveBorder: Border.all(color: Theme.of(context).colorScheme.secondary),
-          tabBackgroundColor: Theme.of(context).colorScheme.tertiary,
-          tabBorderRadius: 8,
-          mainAxisAlignment: MainAxisAlignment.center,
-          tabs: [
-            
-              //help
-              GButton(
-                icon: Icons.help_outline_rounded,
-                // text: 'Help',
-              ),
-        
-              //maps
-              GButton(
-                icon: Icons.location_pin,
-                // text: 'Map',
-              ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Container(
+          padding: EdgeInsets.all(8),
+          child: GNav(
+            selectedIndex: _selectedIndex, // Highlight the selected button
+            onTabChange: _onItemTapped, // Handle button tap
+            color: Theme.of(context).colorScheme.primary,
+            activeColor: Theme.of(context).colorScheme.inversePrimary,
+            tabActiveBorder: Border.all(color: Theme.of(context).colorScheme.secondary),
+            tabBackgroundColor: Theme.of(context).colorScheme.tertiary,
+            tabBorderRadius: 5,
+            mainAxisAlignment: MainAxisAlignment.center,
+            tabs: [
               
-        
-              //home
-              GButton(
-                icon: Icons.home,
-                // text: 'Home',
-              ),
-        
-              //contact
-              GButton( 
-              icon: Icons.person_2_outlined,
-              // text: 'Contacts',
-              ),
-        
-              //settings
-              GButton(
-                icon: Icons.settings,
-                // text: 'Settings',
-              )
-          ],
+                //help
+                GButton(
+                  icon: Icons.help_outline_rounded,
+                  // text: 'Help',
+                ),
+          
+                //maps
+                GButton(
+                  icon: Icons.location_pin,
+                  // text: 'Map',
+                ),
+                
+          
+                //home
+                GButton(
+                  icon: Icons.home,
+                  // text: 'Home',
+                ),
+          
+                //contact
+                GButton( 
+                icon: Icons.person_2_outlined,
+                // text: 'Contacts',
+                ),
+          
+                //settings
+                GButton(
+                  icon: Icons.settings,
+                  // text: 'Settings',
+                )
+            ],
+          ),
         ),
       ),
     );

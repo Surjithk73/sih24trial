@@ -1,7 +1,7 @@
 class Contact {
-  final int? id;
-  final String name;
-  final String phoneNumber;
+  int? id;
+  String name;
+  String phoneNumber;
 
   Contact({this.id, required this.name, required this.phoneNumber});
 
@@ -11,5 +11,13 @@ class Contact {
       'name': name,
       'phoneNumber': phoneNumber,
     };
+  }
+
+  factory Contact.fromMap(Map<String, dynamic> map) {
+    return Contact(
+      id: map['id'],
+      name: map['name'],
+      phoneNumber: map['phoneNumber'],
+    );
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class ForgotPassword extends StatefulWidget {
+  const ForgotPassword({super.key});
+
   @override
   _ForgotPasswordState createState() => _ForgotPasswordState();
 }
@@ -21,7 +23,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   void _verifyOtp() {
     // Simulate OTP verification
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('OTP verified successfully')),
+      const SnackBar(content: Text('OTP verified successfully')),
     );
   }
 
@@ -29,7 +31,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Forgot Password'),
+        title: const Text('Forgot Password'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -44,23 +46,23 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   fontWeight: FontWeight.bold,
                 )
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               if (!_otpSent)
                 Column(
                   children: [
                     _buildPhoneNumberInput(),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
                         if (_phoneController.text.isNotEmpty) {
                           _sendOtp();
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Please enter your phone number')),
+                            const SnackBar(content: Text('Please enter your phone number')),
                           );
                         }
                       },
-                      child: Text('Send OTP'),
+                      child: const Text('Send OTP'),
                     ),
                   ],
                 )
@@ -68,18 +70,18 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 Column(
                   children: [
                     _buildOtpInput(),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
                         if (_otpController.text.isNotEmpty) {
                           _verifyOtp();
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Please enter the OTP')),
+                            const SnackBar(content: Text('Please enter the OTP')),
                           );
                         }
                       },
-                      child: Text('Verify OTP'),
+                      child: const Text('Verify OTP'),
                     ),
                   ],
                 ),
@@ -94,7 +96,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     return TextField(
       controller: _phoneController,
       keyboardType: TextInputType.phone,
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         labelText: 'Phone Number',
         border: OutlineInputBorder(),
         prefixIcon: Icon(Icons.phone),
@@ -106,7 +108,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     return TextField(
       controller: _otpController,
       keyboardType: TextInputType.number,
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         labelText: 'Enter OTP',
         border: OutlineInputBorder(),
         prefixIcon: Icon(Icons.lock),

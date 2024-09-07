@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sih_1/pages/contact/contact_provider.dart';
-import 'package:sih_1/pages/dashboard/model/sos_model.dart';
+import 'package:sih_1/pages/dashboard/provider/report_provider.dart';
+import 'package:sih_1/pages/dashboard/provider/sos_provider.dart';
 import 'package:sih_1/pages/login_register/models/auth_provider.dart';
 import 'package:sih_1/pages/login_register/login_page.dart';
 import 'package:sih_1/theme/theme_provider.dart';
@@ -15,6 +16,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => ThemeProvider()),
         ChangeNotifierProvider(create: (context) => SOSProvider()),
         ChangeNotifierProvider(create: (context) => ContactProvider() ),
+        ChangeNotifierProvider(create: (context) => ReportIssueProvider() ),
       ],
       child: const MyApp(),
     ),
@@ -29,7 +31,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: Provider.of<ThemeProvider>(context).themeData,
-      home: LoginPage(),
+      home: const LoginPage(),
     );
   }
 }

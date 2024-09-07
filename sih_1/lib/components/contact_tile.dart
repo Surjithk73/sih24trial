@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -8,12 +10,12 @@ class ContactTile extends StatelessWidget {
   final VoidCallback onDelete;
 
   const ContactTile({
-    Key? key,
+    super.key,
     required this.contactName,
     required this.phoneNumber,
     required this.onEdit,
     required this.onDelete,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -38,18 +40,18 @@ class ContactTile extends StatelessWidget {
 
   Widget _buildContactTile() {
     return ListTile(
-      leading: CircleAvatar(
+      leading: const CircleAvatar(
         radius: 25,
         backgroundColor: Colors.blueAccent,
         child: Icon(Icons.person, color: Colors.white),
       ),
       title: Text(
         contactName,
-        style: TextStyle(fontWeight: FontWeight.bold),
+        style: const TextStyle(fontWeight: FontWeight.bold),
       ),
       subtitle: Text(phoneNumber),
-      trailing: Icon(Icons.chevron_right),
-      contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      trailing: const Icon(Icons.chevron_right),
+      contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       tileColor: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
@@ -59,10 +61,10 @@ class ContactTile extends StatelessWidget {
 
   Widget _buildSwipeRightBackground() {
     return Container(
-      padding: EdgeInsets.only(left: 20),
+      padding: const EdgeInsets.only(left: 20),
       alignment: Alignment.centerLeft,
       color: Colors.green,
-      child: Row(
+      child: const Row(
         children: [
           Icon(Icons.call, color: Colors.white),
           SizedBox(width: 8),
@@ -77,10 +79,10 @@ class ContactTile extends StatelessWidget {
 
   Widget _buildSwipeLeftBackground() {
     return Container(
-      padding: EdgeInsets.only(right: 20),
+      padding: const EdgeInsets.only(right: 20),
       alignment: Alignment.centerRight,
       color: Colors.red,
-      child: Row(
+      child: const Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.edit, color: Colors.white),
@@ -96,26 +98,26 @@ class ContactTile extends StatelessWidget {
     return showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Choose Action'),
-        content: Text('Do you want to edit or delete this contact?'),
+        title: const Text('Choose Action'),
+        content: const Text('Do you want to edit or delete this contact?'),
         actions: [
           TextButton(
             onPressed: () {
               onEdit();
               Navigator.of(context).pop(true);
             },
-            child: Text('Edit'),
+            child: const Text('Edit'),
           ),
           TextButton(
             onPressed: () {
               onDelete();
               Navigator.of(context).pop(true);
             },
-            child: Text('Delete'),
+            child: const Text('Delete'),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text('Cancel'),
+            child: const Text('Cancel'),
           ),
         ],
       ),

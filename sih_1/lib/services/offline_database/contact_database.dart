@@ -47,6 +47,7 @@ class DatabaseHelper {
     return List.generate(maps.length, (i) => Contact.fromMap(maps[i]));
   }
 
+
   Future<int> addContact(Contact contact) async {
     final db = await database;
     return await db.insert('contacts', contact.toMap());

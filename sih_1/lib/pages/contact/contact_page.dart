@@ -7,11 +7,13 @@ import 'contact_provider.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class ContactPage extends StatelessWidget {
+  const ContactPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Contacts'),
+        title: const Text('Contacts'),
       ),
       body: Consumer<ContactProvider>(
         builder: (context, provider, child) {
@@ -22,7 +24,7 @@ class ContactPage extends StatelessWidget {
               return Slidable(
                 key: ValueKey(contact.id),
                 startActionPane: ActionPane(
-                  motion: StretchMotion(),
+                  motion: const StretchMotion(),
                   children: [
                     SlidableAction(
                       onPressed: (context) => _callContact(context, contact.phoneNumber),
@@ -34,7 +36,7 @@ class ContactPage extends StatelessWidget {
                   ],
                 ),
                 endActionPane: ActionPane(
-                  motion: StretchMotion(),
+                  motion: const StretchMotion(),
                   children: [
                     SlidableAction(
                       onPressed: (context) => _editContact(context, contact),
@@ -63,7 +65,7 @@ class ContactPage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _addContact(context),
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -86,24 +88,24 @@ class ContactPage extends StatelessWidget {
   }
 
   void _editContact(BuildContext context, Contact contact) {
-    final _nameController = TextEditingController(text: contact.name);
-    final _phoneController = TextEditingController(text: contact.phoneNumber);
+    final nameController = TextEditingController(text: contact.name);
+    final phoneController = TextEditingController(text: contact.phoneNumber);
 
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Edit Contact'),
+          title: const Text('Edit Contact'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: _nameController,
-                decoration: InputDecoration(labelText: 'Name'),
+                controller: nameController,
+                decoration: const InputDecoration(labelText: 'Name'),
               ),
               TextField(
-                controller: _phoneController,
-                decoration: InputDecoration(labelText: 'Phone Number'),
+                controller: phoneController,
+                decoration: const InputDecoration(labelText: 'Phone Number'),
                 keyboardType: TextInputType.phone,
               ),
             ],
@@ -113,12 +115,12 @@ class ContactPage extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog without doing anything
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
-                final name = _nameController.text.trim();
-                final phoneNumber = _phoneController.text.trim();
+                final name = nameController.text.trim();
+                final phoneNumber = phoneController.text.trim();
 
                 if (name.isNotEmpty && phoneNumber.isNotEmpty) {
                   final updatedContact = Contact(id: contact.id, name: name, phoneNumber: phoneNumber);
@@ -128,7 +130,7 @@ class ContactPage extends StatelessWidget {
                   // You can show an error message here
                 }
               },
-              child: Text('Save'),
+              child: const Text('Save'),
             ),
           ],
         );
@@ -140,12 +142,12 @@ class ContactPage extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Delete Contact'),
+        title: const Text('Delete Contact'),
         content: Text('Are you sure you want to delete ${contact.name}?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text('Cancel'),
+            child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () {
@@ -153,7 +155,7 @@ class ContactPage extends StatelessWidget {
                   .deleteContact(contact.id!);
               Navigator.of(context).pop();
             },
-            child: Text('Delete'),
+            child: const Text('Delete'),
           ),
         ],
       ),
@@ -161,24 +163,24 @@ class ContactPage extends StatelessWidget {
   }
 
   void _addContact(BuildContext context) {
-    final _nameController = TextEditingController();
-    final _phoneController = TextEditingController();
+    final nameController = TextEditingController();
+    final phoneController = TextEditingController();
 
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Add New Contact'),
+          title: const Text('Add New Contact'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: _nameController,
-                decoration: InputDecoration(labelText: 'Name'),
+                controller: nameController,
+                decoration: const InputDecoration(labelText: 'Name'),
               ),
               TextField(
-                controller: _phoneController,
-                decoration: InputDecoration(labelText: 'Phone Number'),
+                controller: phoneController,
+                decoration: const InputDecoration(labelText: 'Phone Number'),
                 keyboardType: TextInputType.phone,
               ),
             ],
@@ -188,12 +190,12 @@ class ContactPage extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog without doing anything
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
-                final name = _nameController.text.trim();
-                final phoneNumber = _phoneController.text.trim();
+                final name = nameController.text.trim();
+                final phoneNumber = phoneController.text.trim();
 
                 if (name.isNotEmpty && phoneNumber.isNotEmpty) {
                   final newContact = Contact(name: name, phoneNumber: phoneNumber);
@@ -203,7 +205,7 @@ class ContactPage extends StatelessWidget {
                   // You can show an error message here
                 }
               },
-              child: Text('Add'),
+              child: const Text('Add'),
             ),
           ],
         );

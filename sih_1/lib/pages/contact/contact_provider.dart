@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sih_1/models/contact.dart';
-import 'package:sih_1/offline_database/contact_database.dart';
+import 'package:sih_1/services/offline_database/contact_database.dart';
 
 class ContactProvider with ChangeNotifier {
   List<Contact> _contacts = [];
